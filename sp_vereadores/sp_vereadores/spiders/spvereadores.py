@@ -14,7 +14,7 @@ class SPVereadoresSpider(scrapy.Spider):
 
     def start_requests(self):
 
-        for url in utils.vereadores_urls():
+        for url in utils.councillors_urls():
 
             logger.info('Starting request to the url {!r}'.format(url))
 
@@ -26,11 +26,11 @@ class SPVereadoresSpider(scrapy.Spider):
 
         logger.info('Starting parser to the url {!r}'.format(url))
 
-        vereador_id = utils.extract_vereador_id(response.body)
+        councillor_id = utils.extract_councillor_id(response.body)
 
-        logger.info('Vereador id: {!r}'.format(vereador_id))
+        logger.info('Councillor id: {!r}'.format(councillor_id))
 
         return scrapy.Request(
-            utils.generate_json_url(vereador_id),
-            callback=utils.Vereador(url=url, id=vereador_id)
+            utils.generate_json_url(councillor_id),
+            callback=utils.Councillor(url=url, id=councillor_id)
         )

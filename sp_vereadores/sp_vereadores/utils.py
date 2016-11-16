@@ -8,17 +8,17 @@ from bs4 import BeautifulSoup
 logger = logging.getLogger(__name__)
 
 BASE_URL = 'http://www.camara.sp.gov.br/vereadores/'
-VEREADOR_URL_CLASS = '.vereador-name'
+COUNCILLOR_URL_CLASS = '.vereador-name'
 
-VEREADOR_ID_BASE_CLASS = '.vereador-entry'
-VEREADOR_ID_KEY = 'data-id'
+COUNCILLOR_ID_BASE_CLASS = '.vereador-entry'
+COUNCILLOR_ID_KEY = 'data-id'
 
-VEREADOR_JSON_DATA_URL = 'http://www1.camara.sp.gov.br/vereador_json.asp?vereador={}'  # noqa
+COUNCILLOR_JSON_DATA_URL = 'http://www1.camara.sp.gov.br/vereador_json.asp?vereador={}'  # noqa
 
-VEREADOR_DATA_DIR = '../data'
+COUNCILLOR_DATA_DIR = '../data'
 
 
-def vereadores_urls():
+def councillors_urls():
 
     logger.info('Acessing the base url: {!r}'.format(BASE_URL))
 
@@ -35,29 +35,29 @@ def vereadores_urls():
             )
         )
 
-    soup = BeautifulSoup(response.text).select(VEREADOR_URL_CLASS)
+    soup = BeautifulSoup(response.text).select(COUNCILLOR_URL_CLASS)
 
     for item in soup:
         logger.info('Next url: {}'.format(item))
         yield item.a.get('href')
 
 
-def extract_vereador_id(html):
+def extract_councillor_id(html):
 
     soup = BeautifulSoup(html)
 
-    data = soup.select_one(VEREADOR_ID_BASE_CLASS)
+    data = soup.select_one(COUNCILLOR_ID_BASE_CLASS)
 
-    vereador_id = data.get(VEREADOR_ID_KEY)
+    councillor_id = data.get(COUNCILLOR_ID_KEY)
 
-    return vereador_id
-
-
-def generate_json_url(vereador_id):
-    return VEREADOR_JSON_DATA_URL.format(vereador_id)
+    return councillor_id
 
 
-class Vereador:
+def generate_json_url(councillor_id):
+    return COUNCILLOR_JSON_DATA_URL.format(councillor_id)
+
+
+class Councillor:
 
     def __init__(self, url, id):
 
@@ -87,5 +87,5 @@ class Vereador:
 
     def write_data_as_json(self):
 
-        with open('{}/{}.json'.format(VEREADOR_DATA_DIR, self.name), 'w') as f:
+        with open('{}/{}.json'.format(COUNCILLOR_DATA_DIR, self.name), 'w') as f: # noqa
             f.write(json.dumps(self.json))
